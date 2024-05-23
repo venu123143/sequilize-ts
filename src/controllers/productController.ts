@@ -90,10 +90,9 @@ export const getProducts = async (req: Request, res: Response) => {
             order: [[sortColumn, sortOrder]]
         });
 
-
         if (searchResults.count === 0) {
             return res.status(404).json({
-                message: "No users found in the table.",
+                message: "No Products found...!",
             });
         }
 

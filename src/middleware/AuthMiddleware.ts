@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express"
 import { UserModel } from "../models/UserModel"
 import db from "../config/db"
 import jwt, { JwtPayload } from "jsonwebtoken"
+import FancyError from "../utils/FancyError";
 
 declare module 'express-serve-static-core' {
     interface Request {
@@ -35,5 +36,10 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
 
     // }
     const loginToken = req.session.LoginToken
+    if (loginToken) {
+        next();
+    } else {
+        throw new FancyError("Unauthorized", 401)
+    }
 
 }

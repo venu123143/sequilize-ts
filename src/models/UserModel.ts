@@ -13,6 +13,7 @@ interface UserAttributes {
     profile?: string;
     provider?: string;
     role?: string;
+    dbName: string;
     mobile?: string;
     isBlocked?: boolean;
     forgotPassword?: string;
@@ -62,6 +63,11 @@ const UserModel = (sequelize: Sequelize, DataTypes: any) => {
                 defaultValue: "",
             },
             provider: {
+                type: DataTypes.STRING,
+                allowNull: true,
+                defaultValue: "emailRegistration",
+            },
+            dbName: {
                 type: DataTypes.STRING,
                 allowNull: true,
                 defaultValue: "emailRegistration",

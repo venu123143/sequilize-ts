@@ -52,7 +52,6 @@ export const LoginUser = async (req: Request, res: Response) => {
         const refreshToken = jwt.sign({ id: user.id }, process.env.REFRESH_SECRET_KEY as jwt.Secret, { expiresIn: '1d' });
 
         req.session.LoginToken = refreshToken
-        console.log(req.session.LoginToken, refreshToken);
 
         const logInfo = await db.device.create({
             name: parser.getOS().name as string,
@@ -72,39 +71,9 @@ export const LoginUser = async (req: Request, res: Response) => {
     }
 }
 
-// export const logOutUser = async (req: Request, res: Response) => {
-//     const RefreshToken = req.cookies.LoginToken
-//     console.log(req.session);
-
-//     try {
-//         if (!RefreshToken) {
-//             res.status(404).json({ message: 'no token in cookies', sucess: false })
-//             return
-//         }
-//         const Loginuser = await db.device.findOne({ where: { authToken: RefreshToken } })
-//         if (Loginuser) {
-//             await db.device.destroy({
-//                 where: { authToken: RefreshToken }
-//             });
-//         }
-//         req.logout((err) => {
-//             if (err) console.log(err);
-//         });
-//         req.session.destroy((err) => {
-//             if (err) console.log(err)
-//         })
-
-//         res.clearCookie('LoginToken').status(200).status(200).json({ message: 'user logged out sucessfully', sucess: true })
-
-//     } catch (error) {
-//         console.log(error);
-//         res.status(400).json({ message: 'user unable to logged out..!', sucess: false })
-//     }
-// }
 
 export const logOutUser = async (req: Request, res: Response) => {
     const loginToken = req.session.LoginToken;
-    console.log(loginToken);
 
     if (!loginToken) {
         return res.status(401).json({ message: 'User is not authenticated' });
@@ -221,29 +190,29 @@ export const resetPassword = async (req: Request, res: Response) => {
 export const sucessPage = async (req: Request, res: Response) => {
     try {
         if (req.user) {
-            const deviceInfo = req.headers['user-agent'];
-            const devices = await db.device.findAll({ where: { user_id: req?.user.id } })
+            const devices = await db.device.findAll({ where: { user_id: req.user.id } })
+
             if (devices.length >= 3) {
-                res.json({ message: 'your account reaches the max login limit for this subscription.' })
+                res.json({ message: 'Your account has reached the maximum login limit for this subscription.' })
                 return
             }
+
+            const deviceInfo = req.headers['user-agent'];
             let parser = new UAParser(deviceInfo);
             const refreshToken = jwt.sign({ id: req.user.id }, process.env.REFRESH_SECRET_KEY as jwt.Secret, { expiresIn: '1d' });
-            const options = {
-                maxAge: 1 * 24 * 60 * 60 * 1000, // for 1 day
-                secure: false,
-                httpOnly: true,
-            }
-            await db.device.create({
+
+            req.session.LoginToken = refreshToken
+
+            const logInfo = await db.device.create({
                 name: parser.getOS().name as string,
                 type: os.hostname(), user_id: req.user.id as number,
                 browser: parser.getBrowser().name as string,
                 authToken: refreshToken
             })
-
-            res.status(201).cookie('LoginToken', refreshToken, options).redirect(process.env.CLIENT_ORIGIN as string)
+            res.status(201).redirect(process.env.CLIENT_ORIGIN as string)
         }
     } catch (error: any) {
+        console.log(error);
 
     }
 }
@@ -259,6 +228,9 @@ export const getAllUsers = async (req: Request, res: Response) => {
         res.json({ cached: true, users })
         return
     }
+
+
+    
     const users = await db.user.findAll()
     await redisClient.set("users", JSON.stringify(users), { EX: 3600 });
     res.json(users)

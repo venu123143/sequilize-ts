@@ -50,7 +50,6 @@ app.use(morgan('dev'));
 
 // controllers
 app.get('/', (req, res) => {
-
     const value = req.session.value ? req.session.value += 1 : req.session.value = 1
     res.send(`backend home route sucessfull with id: ${req.session.id}, value= ${value}`)
 })

@@ -140,9 +140,9 @@ router.delete('/:id', deleteProduct)
  *         schema:
  *           type: array
  *           items:
- *             $ref: '../models/ProuctSchems'
+ *              $ref: '../models/ProuctSchems'
  * */
-router.get('/', getProducts)
+router.get('/', authMiddleware, getProducts)
 
 /**
  *  @swagger
@@ -160,7 +160,7 @@ router.get('/', getProducts)
  *       200:
  *         description: Returns a product
  *         schema:
- *           $ref: '#/definitions/Product'
+ *            $ref: '../models/ProuctSchems'
  *       404:
  *         description: Product not found
  * */

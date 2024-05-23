@@ -291,18 +291,130 @@ router.post('/forgot-password', forgotPassword);
  */
 router.post('/reset-password', resetPassword);
 
+/**
+ * @swagger
+ * /api/users/google:
+ *   get:
+ *     summary: Initiate Google OAuth authentication
+ *     tags:
+ *       - Users
+ *     responses:
+ *       302:
+ *         description: Redirects to Google OAuth consent screen
+ */
 router.get('/google', passport.authenticate("google", { scope: ["profile", "email"] }))
+/**
+ * @swagger
+ * /api/users/google/callback:
+ *   get:
+ *     summary: Google OAuth callback
+ *     tags:
+ *       - Users
+ *     parameters:
+ *       - in: query
+ *         name: code
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Authorization code received from Google
+ *       - in: query
+ *         name: state
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: State parameter for security
+ *     responses:
+ *       302:
+ *         description: Redirects to success or failure page based on authentication result
+ */
 router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/api/users/failure', successRedirect: '/api/users/success' }))
 
 router.get('/facebook', passport.authenticate("facebook", { scope: ["profile", "email"] }))
 router.get('/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/api/users/failure', successRedirect: '/api/users/success' }))
 
+/**
+ * @swagger
+ * /api/users/github:
+ *   get:
+ *     summary: Initiate GitHub OAuth authentication
+ *     tags:
+ *       - Users
+ *     responses:
+ *       302:
+ *         description: Redirects to GitHub OAuth consent screen
+ */
 router.get('/github', passport.authenticate("github", { scope: ["profile", "email"] }))
+
+/**
+ * @swagger
+ * /api/users/github/callback:
+ *   get:
+ *     summary: GitHub OAuth callback
+ *     tags:
+ *       - Users
+ *     parameters:
+ *       - in: query
+ *         name: code
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Authorization code received from GitHub
+ *       - in: query
+ *         name: state
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: State parameter for security
+ *     responses:
+ *       302:
+ *         description: Redirects to success or failure page based on authentication result
+ */
 router.get('/github/callback', passport.authenticate('github', { failureRedirect: '/api/users/failure', successRedirect: '/api/users/success' }))
 
+/**
+ * @swagger
+ * /api/users/success:
+ *   get:
+ *     summary: Success page after successful authentication
+ *     tags:
+ *       - Users
+ *     responses:
+ *       200:
+ *         description: Success page
+ */
 router.get('/success', sucessPage)
+/**
+ * @swagger
+ * /api/users/failure:
+ *   get:
+ *     summary: Failure page after unsuccessful authentication
+ *     tags:
+ *       - Users
+ *     responses:
+ *       200:
+ *         description: Failure page
+ */
 router.get('/failure', failurePage)
 
+/**
+ * @swagger
+ * /api/users/devices:
+ *   get:
+ *     summary: Get devices for a user
+ *     tags:
+ *       - Users
+ *     responses:
+ *       200:
+ *         description: List of devices for the user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '../models/DeviceModel.ts'
+ *       500:
+ *         description: Internal server error
+ */
 router.get('/devices', getDevices)
 router.get('/value', value)
 /**

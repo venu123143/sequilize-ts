@@ -9,12 +9,12 @@ const verifyCallback = async (accessToken: string, refreshToken: string, profile
         let user = await db.user.findOne({ where: { email: profile.emails![0].value } });
 
         if (!user) {
-            user = await db.user.create({
-                firstname: profile.displayName,
-                email: profile.emails![0].value,
-                profile: profile?.picture,
-                provider: 'google'
-            });
+            // user = await db.user.create({
+            //     firstname: profile.displayName,
+            //     email: profile.emails![0].value,
+            //     profile: profile?.picture,
+            //     provider: 'google'
+            // });
         }
         return done(null, user);
     } catch (error) {
@@ -32,13 +32,9 @@ const googleStrategyOptions: StrategyOptions = {
 passport.use(new GoogleStrategy(googleStrategyOptions, promisify(verifyCallback)));
 
 passport.serializeUser((user, done) => {
-    console.log("serielize", user);
-
     done(null, user as UserModel);
 });
 
 passport.deserializeUser<UserModel | false | null | undefined>((user, done) => {
-    console.log("de-serielize", user);
-
     done(null, user as UserModel);
 });
