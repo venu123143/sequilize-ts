@@ -7,6 +7,10 @@ const sequelize_1 = require("sequelize");
 const user_model_1 = __importDefault(require("@/models/user.model"));
 const device_model_1 = __importDefault(require("@/models/device.model"));
 const product_model_1 = __importDefault(require("@/models/product.model"));
+const role_model_1 = __importDefault(require("@/models/role.model"));
+const permissions_model_1 = __importDefault(require("@/models/permissions.model"));
+const roleHasPermission_model_1 = __importDefault(require("@/models/roleHasPermission.model"));
+const permissionDependencies_model_1 = __importDefault(require("@/models/permissionDependencies.model"));
 const connection = new sequelize_1.Sequelize(process.env.DB_DATABASE, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
     host: process.env.DB_HOST,
     dialect: "mysql",
@@ -28,6 +32,10 @@ const db = {
     User: (0, user_model_1.default)(connection),
     Device: (0, device_model_1.default)(connection),
     Product: (0, product_model_1.default)(connection),
+    Role: (0, role_model_1.default)(connection),
+    Permissions: (0, permissions_model_1.default)(connection),
+    RoleHasPermission: (0, roleHasPermission_model_1.default)(connection),
+    PermissionDependencies: (0, permissionDependencies_model_1.default)(connection),
 };
 db.User.hasMany(db.Product, { foreignKey: "seller", as: "products" });
 db.User.hasMany(db.Device, { foreignKey: "user_id", as: "devices" });

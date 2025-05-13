@@ -1,13 +1,14 @@
-import { Sequelize, DataTypes } from "sequelize";
+import { Sequelize } from "sequelize";
 import initUserModel from "@/models/user.model";
 import initDeviceModel from "@/models/device.model";
 import initProductModel from "@/models/product.model";
-import initRole, { Role } from "@/models/role.model";
+import initRole from "@/models/role.model";
 import initPermissions from "@/models/permissions.model";
 import initRoleHasPermission from "@/models/roleHasPermission.model";
 import initPermissionDependencies from "@/models/permissionDependencies.model";
 
 // migration commands
+// npx sequelize-cli init
 // npx sequelize-cli db:migrate:undo:all
 // npx sequelize-cli migration:generate --name create-users-table
 // # Wait a few seconds to ensure a different timestamp
