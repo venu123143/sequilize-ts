@@ -1,0 +1,9 @@
+# Database Migrations
+
+This project uses Sequelize CLI to manage database migrations. Below are the commands and their uses:
+
+## Migration Commands
+
+### Create a new migration
+```bash
+npx sequelize-cli model:generate --name ModelName --attributes attribute1:string,attribute2:integer

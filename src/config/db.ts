@@ -18,7 +18,10 @@ import initPermissionDependencies from "@/models/permissionDependencies.model";
 // npx sequelize-cli migration:generate --name add-indexes
 // npx sequelize-cli migration:generate --name create-users-table
 // npx sequelize-cli db:migrate
-
+// If you want to undo the last migration, you can use:
+// npx sequelize-cli db:migrate:undo
+// If you want to undo all migrations, you can use:
+// npx sequelize-cli db:migrate:undo:all
 // Initialize the Sequelize connection
 const connection = new Sequelize(
     process.env.DB_DATABASE as string,
