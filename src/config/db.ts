@@ -23,6 +23,12 @@ import initPermissionDependencies from "@/models/permissionDependencies.model";
 // If you want to undo all migrations, you can use:
 // npx sequelize-cli db:migrate:undo:all
 // Initialize the Sequelize connection
+// npx sequelize-cli seed:generate --name demo-users
+// npx sequelize-cli seed:generate --name demo-products
+// npx sequelize-cli seed:generate --name demo-devices
+// npx sequelize-cli db:seed:all
+// npx sequelize-cli db:seed:undo
+// npx sequelize-cli db:seed:undo:all
 const connection = new Sequelize(
     process.env.DB_DATABASE as string,
     process.env.DB_USERNAME as string,
