@@ -1,9 +1,171 @@
-# Database Migrations
+# Sequelize TypeScript E-commerce Database Setup
 
-This project uses Sequelize CLI to manage database migrations. Below are the commands and their uses:
+This repository contains the database configuration and migration files for an e-commerce application built with Sequelize ORM and TypeScript.
 
-## Migration Commands
+## Database Structure
 
-### Create a new migration
+The database consists of three main tables:
+
+1. **Users**: Stores user accounts with roles (admin, dealer, custom)
+2. **Devices**: Tracks user devices and authentication tokens
+3. **Products**: Contains product listings with seller information
+
+## Setup Instructions
+
+### Prerequisites
+
+- Node.js (v16+)
+- MySQL database
+- TypeScript
+
+### Installation
+
+1. Clone the repository
+   ```bash
+   git clone https://github.com/yourusername/your-repo-name.git
+   cd your-repo-name
+   ```
+
+2. Install dependencies
+   ```bash
+   npm install
+   ```
+
+3. Configure environment variables by creating a `.env` file:
+   ```
+   DB_HOST=localhost
+   DB_USERNAME=root
+   DB_PASSWORD=yourpassword
+   DB_DATABASE=ecommerce_db
+   ```
+
+4. Create the database
+   ```bash
+   npx sequelize-cli db:create
+   ```
+
+### Database Migrations
+
+#### Creating Migration Files
+
 ```bash
-npx sequelize-cli model:generate --name ModelName --attributes attribute1:string,attribute2:integer
+# Create users table migration
+npx sequelize-cli migration:generate --name create-users-table
+
+# Create devices table migration
+npx sequelize-cli migration:generate --name create-devices-table
+
+# Create products table migration
+npx sequelize-cli migration:generate --name create-products-table
+
+# Create additional indexes migration
+npx sequelize-cli migration:generate --name add-indexes
+```
+
+#### Running Migrations
+
+Make sure your migration files are in the correct order (users table first, then others).
+
+```bash
+# Run all migrations
+npx sequelize-cli db:migrate
+
+# Undo the most recent migration
+npx sequelize-cli db:migrate:undo
+
+# Undo all migrations
+npx sequelize-cli db:migrate:undo:all
+```
+
+#### Creating Seeders
+
+```bash
+# Create seeder for admin users
+npx sequelize-cli seed:generate --name demo-users
+
+# Create seeder for sample products
+npx sequelize-cli seed:generate --name demo-products
+
+# Create seeder for sample devices
+npx sequelize-cli seed:generate --name demo-devices
+```
+
+#### Running Seeders
+
+```bash
+# Run all seeders
+npx sequelize-cli db:seed:all
+
+# Undo most recent seeder
+npx sequelize-cli db:seed:undo
+
+# Undo all seeders
+npx sequelize-cli db:seed:undo:all
+```
+
+## Model Structure
+
+### User Model
+
+Users in the system can have different roles and statuses:
+
+- **Roles**: Admin, Dealer, Custom
+- **Statuses**: Active, Suspended, Pending, Archived, Blocked, Rejected
+- **Fields**: Name, Email, Password, Phone, Address details, Gender
+
+### Device Model
+
+Keeps track of user devices for security purposes:
+
+- **Fields**: Name, Type, Auth Token, Browser, User ID
+
+### Product Model
+
+Products that can be listed and sold on the platform:
+
+- **Fields**: Title, Slug, Description, Price, Discount, Quantity, Original Price, Thumbnail Image, Overall Rating, Details (JSON), Seller ID
+
+## Database Relationships
+
+- A User can have many Devices (One-to-Many)
+- A User can have many Products as a seller (One-to-Many)
+- Products belong to Users as sellers (Many-to-One)
+- Devices belong to Users (Many-to-One)
+
+## Example Usage
+
+```typescript
+import db from '@/config/db';
+
+// Find user with their devices
+const user = await db.User.findByPk(1, {
+  include: [{ model: db.Device, as: 'devices' }]
+});
+
+// Find products with seller details
+const products = await db.Product.findAll({
+  include: [{ model: db.User, as: 'sellerDetails' }]
+});
+```
+
+## Troubleshooting
+
+### Migration Order Issues
+
+If you encounter errors like "Failed to open the referenced table" during migrations, ensure that your migration files run in the correct order:
+
+1. First create tables without foreign keys (users)
+2. Then create tables with foreign keys (devices, products)
+
+You may need to rename migration files with proper timestamps to enforce order:
+
+```
+20250513100000-create-users-table.js
+20250513100001-create-devices-table.js
+20250513100002-create-products-table.js
+20250513100003-add-indexes.js
+```
+
+## License
+
+MIT
