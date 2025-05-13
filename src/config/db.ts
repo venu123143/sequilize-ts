@@ -1,39 +1,59 @@
 import { Sequelize, DataTypes } from "sequelize";
-import initUserModel from "@/models/UserModel";
-import initDeviceModel from "@/models/DeviceModel";
-import initProductModel from "@/models/ProuctSchems";
+import initUserModel from "@/models/user.model";
+import initDeviceModel from "@/models/device.model";
+import initProductModel from "@/models/product.model";
+import initRole, { Role } from "@/models/role.model";
+import initPermissions from "@/models/permissions.model";
+import initRoleHasPermission from "@/models/roleHasPermission.model";
+import initPermissionDependencies from "@/models/permissionDependencies.model";
+
+// migration commands
+// npx sequelize-cli db:migrate:undo:all
+// npx sequelize-cli migration:generate --name create-users-table
+// # Wait a few seconds to ensure a different timestamp
+// npx sequelize-cli migration:generate --name create-devices-table
+// # Wait a few seconds
+// npx sequelize-cli migration:generate --name create-products-table
+// # Wait a few seconds
+// npx sequelize-cli migration:generate --name add-indexes
+// npx sequelize-cli migration:generate --name create-users-table
+// npx sequelize-cli db:migrate
 
 // Initialize the Sequelize connection
 const connection = new Sequelize(
-  process.env.DB_DATABASE as string,
-  process.env.DB_USERNAME as string,
-  process.env.DB_PASSWORD as string,
-  {
-    host: process.env.DB_HOST,
-    dialect: "mysql",
-    logging: false,
-    pool: { max: 10, min: 0, acquire: 30000, idle: 10000 },
-  }
+    process.env.DB_DATABASE as string,
+    process.env.DB_USERNAME as string,
+    process.env.DB_PASSWORD as string,
+    {
+        host: process.env.DB_HOST,
+        dialect: "mysql",
+        logging: false,
+        pool: { max: 10, min: 0, acquire: 30000, idle: 10000 },
+    }
 );
 
 // Test the database connection
 connection
-  .authenticate()
-  .then(() => {
-    console.log("Connection has been established successfully.");
-  })
-  .catch((error: Error) => {
-    connection?.close();
-    console.error("Unable to connect to the database:", error);
-  });
+    .authenticate()
+    .then(() => {
+        console.log("Connection has been established successfully.");
+    })
+    .catch((error: Error) => {
+        connection?.close();
+        console.error("Unable to connect to the database:", error);
+    });
 
 // Initialize models
 const db = {
-  Sequelize,
-  connection,
-  User: initUserModel(connection),
-  Device: initDeviceModel(connection),
-  Product: initProductModel(connection),
+    Sequelize,
+    connection,
+    User: initUserModel(connection),
+    Device: initDeviceModel(connection),
+    Product: initProductModel(connection),
+    Role: initRole(connection),
+    Permissions: initPermissions(connection),
+    RoleHasPermission: initRoleHasPermission(connection),
+    PermissionDependencies: initPermissionDependencies(connection),
 };
 
 // Define associations

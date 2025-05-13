@@ -7,7 +7,13 @@
     "start": "npm-run-all --parallel start:ts start:js",
     "tsc": "tsc",
     "start:ts": "tsc -w",
-    "start:js": "nodemon --watch dist dist/index.js"
+    "start:js": "nodemon --watch dist dist/index.js",
+    "generate:migrations": "node scripts/generate-migrations.js",
+    "migrate": "sequelize-cli db:migrate",
+    "migrate:undo": "sequelize-cli db:migrate:undo",
+    "migrate:undo:all": "sequelize-cli db:migrate:undo:all",
+    "seed": "sequelize-cli db:seed:all",
+    "seed:undo:all": "sequelize-cli db:seed:undo:all"
   },
   "_moduleAliases": {
     "@": "dist"
@@ -38,7 +44,8 @@
     "nodemon": "^3.0.1",
     "npm-run-all": "^4.1.5",
     "rimraf": "^5.0.5",
-    "ts-node": "^10.9.1",
+    "sequelize-cli": "^6.6.3",
+    "ts-node": "^10.9.2",
     "typescript": "^5.2.2"
   },
   "dependencies": {

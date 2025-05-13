@@ -51,7 +51,7 @@ const DeviceModel = (sequelize: Sequelize): typeof Device => {
                 model: 'users',
                 key: 'id'
             }
-        }
+        }   
     }, {
         sequelize,
         tableName: 'devices',

@@ -4,9 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
-const UserModel_1 = __importDefault(require("@/models/UserModel"));
-const DeviceModel_1 = __importDefault(require("@/models/DeviceModel"));
-const ProuctSchems_1 = __importDefault(require("@/models/ProuctSchems"));
+const user_model_1 = __importDefault(require("@/models/user.model"));
+const device_model_1 = __importDefault(require("@/models/device.model"));
+const product_model_1 = __importDefault(require("@/models/product.model"));
 const connection = new sequelize_1.Sequelize(process.env.DB_DATABASE, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
     host: process.env.DB_HOST,
     dialect: "mysql",
@@ -25,9 +25,9 @@ connection
 const db = {
     Sequelize: sequelize_1.Sequelize,
     connection,
-    User: (0, UserModel_1.default)(connection),
-    Device: (0, DeviceModel_1.default)(connection),
-    Product: (0, ProuctSchems_1.default)(connection),
+    User: (0, user_model_1.default)(connection),
+    Device: (0, device_model_1.default)(connection),
+    Product: (0, product_model_1.default)(connection),
 };
 db.User.hasMany(db.Product, { foreignKey: "seller", as: "products" });
 db.User.hasMany(db.Device, { foreignKey: "user_id", as: "devices" });
