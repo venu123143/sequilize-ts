@@ -1,76 +1,90 @@
-import express, { Application, } from "express";
-import passport from "passport"
-import { Server } from "http"
-import cors, { CorsOptions } from "cors"
-import cookieParser from "cookie-parser"
-import morgan from "morgan"
+import express, { Application } from "express";
+import 'module-alias/register';
+import http from "http";
+import cors from "cors";
+import 'module-alias/register';
+import path from "path";
+import helmet from "helmet";
+import cookieParser from "cookie-parser";
+import "dotenv/config";
 
+import "@/config/db";
+import { options } from "@/core/cors";
+import RESPONSE from "@/utils/Response";
+import v1Router from "@/global/routes";
 
-
-// swagger
-import swaggerjsdoc from "swagger-jsdoc"
-import swaggerui from "swagger-ui-express"
-
-// Handle uncaught Exception
 process.on("uncaughtException", (err) => {
-    console.log(`Error: ${err.message}`);
-    console.log(`shutting down the server for handling uncaught Exception`);
-})
-
-import 'dotenv/config'
-import './utils/GoogleAuth';
-import './utils/FacebookAuth';
-import './utils/GithubAuth';
+    // LoggerService.loggerInstance.logAuditEvent("Uncaught exception", { userId: "system", action: "uncaughtException", details: err.message });
+    console.error(`Shutting down the server for handling uncaught exceptions`);
+});
 
 
-const app: Application = express()
+class Server {
+    private app: Application;
+    private port: number;
+    private server: http.Server;
 
-import session from "./config/ConnectSession"
-import ErrorHandler from "./middleware/Error"
-import userRoute from "./routes/UserRoutes"
-import productRoute from "./routes/ProductRoute"
-import { swagOptions } from "./utils/Options"
+    constructor() {
+        this.app = express();
+        this.port = parseInt(process.env.PORT as string, 10) || 7893;
+        this.server = http.createServer(this.app); // Initialize HTTP server
+
+        this.config();
+        this.routes();
+    }
+
+    private config() {
+        this.app.disable('x-powered-by');
+        this.app.use(cors(options));
+        this.app.use(express.json());
+        this.app.use(express.urlencoded({ extended: true }));
+        this.app.use(cookieParser());
+        this.app.use('/images', express.static(path.join(__dirname, '../src/public/images')));
+        this.app.use('/static-files', express.static(path.join(__dirname, '../src/public/static')));
+        this.app.use(helmet());
+    }
+
+    private routes() {
+        this.app.get("/", (req, res) => {
+            RESPONSE.SuccessResponse(res, 200, { message: "Development Server started successfully.", data: [] });
+        });
+
+        this.app.use("/api/v1", v1Router);
+    }
+
+    public async start() {
+        this.server.listen(this.port, () => {
+            console.log(`Server is running on port ${this.port}`);
+        });
+
+        this.handleUncaughtRejection();
+        this.handleGracefulShutdown();
+    }
 
 
-// cors and session
-const options: CorsOptions = {
-    origin: ['http://localhost:3000', 'http://localhost:5173'],
-    credentials: true,
+
+    private handleUncaughtRejection() {
+        process.on("unhandledRejection", (err: Error) => {
+            // LoggerService.loggerInstance.logAuditEvent("Unhandled rejection", { userId: "system", action: "unhandledRejection", details: err.message });
+            this.server.close(() => {
+                process.exit(1);
+            });
+        });
+    }
+
+    private handleGracefulShutdown() {
+        process.on("SIGINT", () => {
+            console.log("Received SIGINT. Shutting down gracefully.");
+            this.server.close(() => process.exit(0));
+        });
+
+        process.on("SIGTERM", () => {
+            console.log("Received SIGTERM. Shutting down gracefully.");
+            this.server.close(() => process.exit(0));
+        });
+    }
 }
-app.use(cors(options));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser())
-app.use(session);
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(morgan('dev'));
 
-// console.log(RedisStore);
-
-// controllers
-app.get('/', (req, res) => {
-    const value = req.session.value ? req.session.value += 1 : req.session.value = 1
-    res.send(`backend home route sucessfull with id: ${req.session.id}, value= ${value}`)
-})
-
-app.use('/api/users', userRoute)
-app.use('/api/product', productRoute)
-
-const swags = swaggerjsdoc(swagOptions)
-app.use("/api", swaggerui.serve, swaggerui.setup(swags))
-
-app.use(ErrorHandler)
-const port = process.env.PORT || 5000
-const server: Server = app.listen(port, () => {
-    console.log(`server is running on port ${port}`)
-})
-
-// unhandled promise rejection
-process.on("unhandledRejection", (err: Error) => {
-    console.log(`Shutting down the server for ${err.message}`);
-    console.log(`Shutting down the server for unhandle promise rejection`);
-    server.close(() => {
-        process.exit(1)
-    })
-})
+// Start the server
+const serverInstance = new Server();
+serverInstance.start();
