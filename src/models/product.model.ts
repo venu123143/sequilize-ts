@@ -8,14 +8,14 @@ export interface ProductAttributes {
     price: number;
     discount?: number;
     quantity: number;
-    originalPrice: number;
-    thumbnailImg: string;
-    overallRating?: number;
-    Details: any;
+    original_price: number;
+    thumbnail_img: string;
+    overall_rating?: number;
+    details: any;
     seller: number;
 }
 
-export class Product extends Model<ProductAttributes, Optional<ProductAttributes, 'id' | 'discount' | 'overallRating'>> implements ProductAttributes {
+export class Product extends Model<ProductAttributes, Optional<ProductAttributes, 'id' | 'discount' | 'overall_rating'>> implements ProductAttributes {
     public id!: number;
     public title!: string;
     public slug!: string;
@@ -23,10 +23,10 @@ export class Product extends Model<ProductAttributes, Optional<ProductAttributes
     public price!: number;
     public discount!: number;
     public quantity!: number;
-    public originalPrice!: number;
-    public thumbnailImg!: string;
-    public overallRating!: number;
-    public Details!: any;
+    public original_price!: number;
+    public thumbnail_img!: string;
+    public overall_rating!: number;
+    public details!: any;
     public seller!: number;
 
     public readonly createdAt!: Date;
@@ -66,19 +66,19 @@ const ProductModel = (sequelize: Sequelize): typeof Product => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        originalPrice: {
+        original_price: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        thumbnailImg: {
+        thumbnail_img: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        overallRating: {
+        overall_rating: {
             type: DataTypes.INTEGER,
             defaultValue: 0
         },
-        Details: {
+        details: {
             type: DataTypes.JSON
         },
         seller: {

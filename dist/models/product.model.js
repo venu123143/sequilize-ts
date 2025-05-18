@@ -38,19 +38,19 @@ const ProductModel = (sequelize) => {
             type: sequelize_1.DataTypes.INTEGER,
             allowNull: false
         },
-        originalPrice: {
+        original_price: {
             type: sequelize_1.DataTypes.INTEGER,
             allowNull: false
         },
-        thumbnailImg: {
+        thumbnail_img: {
             type: sequelize_1.DataTypes.STRING,
             allowNull: false
         },
-        overallRating: {
+        overall_rating: {
             type: sequelize_1.DataTypes.INTEGER,
             defaultValue: 0
         },
-        Details: {
+        details: {
             type: sequelize_1.DataTypes.JSON
         },
         seller: {

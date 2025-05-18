@@ -23,15 +23,23 @@ interface User {
 export default {
   async up(queryInterface: QueryInterface): Promise<void> {
     // First, get the user IDs to use as sellers
-    const [users] = await queryInterface.sequelize.query<User[]>(
+    const users = await queryInterface.sequelize.query(
       'SELECT id FROM users WHERE role = "dealer"',
-      { type: QueryTypes.SELECT }
-    );
-    
+      {
+        type: QueryTypes.SELECT,
+        raw: true,
+        plain: false
+      }
+    ) as User[];
+
+    console.log('Fetched dealer users:', users);
+
     if (!users || users.length === 0) {
       console.log('No dealer users found. Skipping product seeding.');
       return;
     }
+
+    console.log('Number of dealer users found:', users.length);
 
     const seller1Id = users[0]?.id;
     const seller2Id = users.length > 1 ? users[1]?.id : users[0]?.id;
@@ -149,6 +157,7 @@ export default {
       }
     ];
 
+    console.log('Generated products:', products.length);
     await queryInterface.bulkInsert('products', products);
   },
 

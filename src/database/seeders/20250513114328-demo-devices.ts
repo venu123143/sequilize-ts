@@ -16,23 +16,31 @@ interface User {
 
 export default {
   async up(queryInterface: QueryInterface): Promise<void> {
-    // Get the user IDs first
-    const [users] = await queryInterface.sequelize.query<User[]>(
+    // Get the user IDs first using a direct query
+    const users = await queryInterface.sequelize.query(
       'SELECT id FROM users',
-      { type: QueryTypes.SELECT }
-    );
+      {
+        type: QueryTypes.SELECT,
+        raw: true,
+        plain: false
+      }
+    ) as User[];
+    
+    console.log('Fetched users:', users);
     
     if (!users || users.length === 0) {
       console.log('No users found. Skipping device seeding.');
       return;
     }
 
+    console.log('Number of users found:', users.length);
+
     // Create devices for each user
     const devices: DeviceData[] = [];
     const browsers = ['Chrome', 'Firefox', 'Safari', 'Edge', 'Opera'];
     const deviceTypes = ['desktop', 'mobile', 'tablet'];
     
-    users.forEach(user => {
+    for (const user of users) {
       // Generate 1-3 devices per user
       const numDevices = Math.floor(Math.random() * 3) + 1;
       
@@ -50,8 +58,9 @@ export default {
           updated_at: new Date()
         });
       }
-    });
+    }
 
+    console.log('Generated devices:', devices.length);
     await queryInterface.bulkInsert('devices', devices);
   },
 
