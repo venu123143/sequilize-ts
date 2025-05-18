@@ -1,5 +1,5 @@
 import { QueryInterface, DataTypes } from 'sequelize';
-
+/** @type {import('sequelize-cli').Migration} */
 export default {
   async up(queryInterface: QueryInterface): Promise<void> {
     await queryInterface.createTable('permissions', {

@@ -9,6 +9,7 @@ import initRoleHasPermission from "@/models/roleHasPermission.model";
 import initPermissionDependencies from "@/models/permissionDependencies.model";
 import initBookingSeats from "@/models/bookingSeats.model";
 import initBookings from "@/models/bookings.model";
+import initBookingAnalytics from "@/models/bookingAnalytics.model";
 
 // migration commands
 // npx sequelize-cli init
@@ -71,6 +72,7 @@ const db = {
     PermissionDependencies: initPermissionDependencies(connection),
     BookingSeats: initBookingSeats(connection),
     Bookings: initBookings(connection),
+    BookingAnalytics: initBookingAnalytics(connection),
 };
 
 // Define associations

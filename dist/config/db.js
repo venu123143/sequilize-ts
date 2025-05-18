@@ -14,6 +14,7 @@ const roleHasPermission_model_1 = __importDefault(require("@/models/roleHasPermi
 const permissionDependencies_model_1 = __importDefault(require("@/models/permissionDependencies.model"));
 const bookingSeats_model_1 = __importDefault(require("@/models/bookingSeats.model"));
 const bookings_model_1 = __importDefault(require("@/models/bookings.model"));
+const bookingAnalytics_model_1 = __importDefault(require("@/models/bookingAnalytics.model"));
 const connection = new sequelize_1.Sequelize(process.env.DB_DATABASE, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
     host: process.env.DB_HOST,
     dialect: "mysql",
@@ -43,6 +44,7 @@ const db = {
     PermissionDependencies: (0, permissionDependencies_model_1.default)(connection),
     BookingSeats: (0, bookingSeats_model_1.default)(connection),
     Bookings: (0, bookings_model_1.default)(connection),
+    BookingAnalytics: (0, bookingAnalytics_model_1.default)(connection),
 };
 db.User.hasMany(db.Product, { foreignKey: "seller", as: "products" });
 db.User.hasMany(db.Device, { foreignKey: "user_id", as: "devices" });
