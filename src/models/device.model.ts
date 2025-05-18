@@ -16,9 +16,11 @@ export class Device extends Model<DeviceAttributes, Optional<DeviceAttributes, '
     public authToken!: string;
     public browser!: string;
     public user_id!: number;
-
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
+    static associate(models: any) {
+
+    }
 }
 
 const DeviceModel = (sequelize: Sequelize): typeof Device => {
@@ -51,7 +53,7 @@ const DeviceModel = (sequelize: Sequelize): typeof Device => {
                 model: 'users',
                 key: 'id'
             }
-        }   
+        }
     }, {
         sequelize,
         tableName: 'devices',

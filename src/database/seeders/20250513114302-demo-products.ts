@@ -1,23 +1,47 @@
-'use strict';
+import { QueryInterface, QueryTypes } from 'sequelize';
 
-/** @type {import('sequelize-cli').Migration} */
-module.exports = {
-  async up(queryInterface, Sequelize) {
+interface ProductData {
+  title: string;
+  slug: string;
+  description: string;
+  price: number;
+  discount: number;
+  quantity: number;
+  original_price: number;
+  thumbnail_img: string;
+  overall_rating: number;
+  details: string;
+  seller: number;
+  created_at: Date;
+  updated_at: Date;
+}
+
+interface User {
+  id: number;
+}
+
+export default {
+  async up(queryInterface: QueryInterface): Promise<void> {
     // First, get the user IDs to use as sellers
-    const users = await queryInterface.sequelize.query(
+    const [users] = await queryInterface.sequelize.query<User[]>(
       'SELECT id FROM users WHERE role = "dealer"',
-      { type: queryInterface.sequelize.QueryTypes.SELECT }
+      { type: QueryTypes.SELECT }
     );
     
-    if (users.length === 0) {
+    if (!users || users.length === 0) {
       console.log('No dealer users found. Skipping product seeding.');
       return;
     }
 
-    const seller1Id = users[0].id;
-    const seller2Id = users.length > 1 ? users[1].id : users[0].id;
+    const seller1Id = users[0]?.id;
+    const seller2Id = users.length > 1 ? users[1]?.id : users[0]?.id;
 
-    await queryInterface.bulkInsert('products', [
+    if (!seller1Id || !seller2Id) {
+      console.log('Invalid seller IDs. Skipping product seeding.');
+      return;
+    }
+
+    const products: ProductData[] = [
       {
         title: 'Smartphone X Pro',
         slug: 'smartphone-x-pro',
@@ -123,10 +147,12 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date()
       }
-    ]);
+    ];
+
+    await queryInterface.bulkInsert('products', products);
   },
 
-  async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('products', null, {});
+  async down(queryInterface: QueryInterface): Promise<void> {
+    await queryInterface.bulkDelete('products', {}, {});
   }
-};
+}; 

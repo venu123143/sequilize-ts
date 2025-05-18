@@ -16,7 +16,6 @@ const express_1 = __importDefault(require("express"));
 require("module-alias/register");
 const http_1 = __importDefault(require("http"));
 const cors_1 = __importDefault(require("cors"));
-require("module-alias/register");
 const path_1 = __importDefault(require("path"));
 const helmet_1 = __importDefault(require("helmet"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));

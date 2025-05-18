@@ -1,24 +1,34 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const ImageModel = (sequelize, DataTypes) => {
-    const Image = sequelize.define('images', {
+exports.Image = void 0;
+const sequelize_1 = require("sequelize");
+class Image extends sequelize_1.Model {
+}
+exports.Image = Image;
+const ImageModel = (sequelize) => {
+    Image.init({
         id: {
-            type: DataTypes.INTEGER,
+            type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
             primaryKey: true,
             autoIncrement: true,
         },
         url: {
-            type: DataTypes.STRING,
+            type: sequelize_1.DataTypes.STRING(255),
             allowNull: false,
         },
         prod_id: {
-            type: DataTypes.INTEGER,
+            type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
             references: {
                 model: 'products',
                 key: 'id'
             }
-        }
+        },
+    }, {
+        sequelize,
+        tableName: "images",
+        freezeTableName: true,
+        timestamps: true,
     });
     return Image;
 };

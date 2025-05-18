@@ -1,44 +1,43 @@
-'use strict';
+import { QueryInterface, DataTypes } from 'sequelize';
 
-/** @type {import('sequelize-cli').Migration} */
-module.exports = {
-  async up(queryInterface, Sequelize) {
+export default {
+  async up(queryInterface: QueryInterface): Promise<void> {
     await queryInterface.createTable('roles', {
       id: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER.UNSIGNED,
         primaryKey: true,
         autoIncrement: true,
       },
       name: {
-        type: Sequelize.STRING(63),
+        type: DataTypes.STRING(63),
         allowNull: false,
         unique: true,
       },
       description: {
-        type: Sequelize.TEXT,
+        type: DataTypes.TEXT,
         allowNull: true,
       },
       status: {
-        type: Sequelize.ENUM('active', 'inactive', 'archived', 'blocked', 'deleted'),
+        type: DataTypes.ENUM('active', 'inactive', 'archived', 'blocked', 'deleted'),
         allowNull: false,
         defaultValue: 'active',
       },
       created_at: {
-        type: Sequelize.DATE,
+        type: DataTypes.DATE,
         allowNull: false,
       },
       updated_at: {
-        type: Sequelize.DATE,
+        type: DataTypes.DATE,
         allowNull: false,
       },
       deleted_at: {
-        type: Sequelize.DATE,
+        type: DataTypes.DATE,
         allowNull: true,
       },
     });
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface: QueryInterface): Promise<void> {
     await queryInterface.dropTable('roles');
   }
-};
+}; 

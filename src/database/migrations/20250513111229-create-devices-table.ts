@@ -1,32 +1,31 @@
-'use strict';
+import { QueryInterface, DataTypes } from 'sequelize';
 
-/** @type {import('sequelize-cli').Migration} */
-module.exports = {
-  async up(queryInterface, Sequelize) {
+export default {
+  async up(queryInterface: QueryInterface): Promise<void> {
     await queryInterface.createTable('devices', {
       id: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
       },
       name: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false
       },
       type: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false
       },
       auth_token: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: true
       },
       browser: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false
       },
       user_id: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
         references: {
           model: 'users',
@@ -36,15 +35,15 @@ module.exports = {
         onDelete: 'CASCADE'
       },
       created_at: {
-        type: Sequelize.DATE,
+        type: DataTypes.DATE,
         allowNull: false,
       },
       updated_at: {
-        type: Sequelize.DATE,
+        type: DataTypes.DATE,
         allowNull: false,
       },
       deleted_at: {
-        type: Sequelize.DATE,
+        type: DataTypes.DATE,
         allowNull: true,
       }
     });
@@ -53,7 +52,7 @@ module.exports = {
     await queryInterface.addIndex('devices', ['user_id']);
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface: QueryInterface): Promise<void> {
     await queryInterface.dropTable('devices');
   }
-};
+}; 

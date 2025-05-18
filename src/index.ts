@@ -2,7 +2,6 @@ import express, { Application } from "express";
 import 'module-alias/register';
 import http from "http";
 import cors from "cors";
-import 'module-alias/register';
 import path from "path";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";

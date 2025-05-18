@@ -1,11 +1,14 @@
 import { Sequelize } from "sequelize";
 import initUserModel from "@/models/user.model";
+import initImageModel from "@/models/image.model";
 import initDeviceModel from "@/models/device.model";
 import initProductModel from "@/models/product.model";
 import initRole from "@/models/role.model";
 import initPermissions from "@/models/permissions.model";
 import initRoleHasPermission from "@/models/roleHasPermission.model";
 import initPermissionDependencies from "@/models/permissionDependencies.model";
+import initBookingSeats from "@/models/bookingSeats.model";
+import initBookings from "@/models/bookings.model";
 
 // migration commands
 // npx sequelize-cli init
@@ -38,6 +41,7 @@ const connection = new Sequelize(
         host: process.env.DB_HOST,
         dialect: "mysql",
         logging: false,
+        port: parseInt(process.env.DB_PORT as string, 10),
         pool: { max: 10, min: 0, acquire: 30000, idle: 10000 },
     }
 );
@@ -58,12 +62,15 @@ const db = {
     Sequelize,
     connection,
     User: initUserModel(connection),
+    Image: initImageModel(connection),
     Device: initDeviceModel(connection),
     Product: initProductModel(connection),
     Role: initRole(connection),
     Permissions: initPermissions(connection),
     RoleHasPermission: initRoleHasPermission(connection),
     PermissionDependencies: initPermissionDependencies(connection),
+    BookingSeats: initBookingSeats(connection),
+    Bookings: initBookings(connection),
 };
 
 // Define associations

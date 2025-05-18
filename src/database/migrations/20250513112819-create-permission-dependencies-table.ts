@@ -1,11 +1,10 @@
-'use strict';
+import { QueryInterface, DataTypes } from 'sequelize';
 
-/** @type {import('sequelize-cli').Migration} */
-module.exports = {
-  async up(queryInterface, Sequelize) {
+export default {
+  async up(queryInterface: QueryInterface): Promise<void> {
     await queryInterface.createTable('permissions_dependencies', {
       permission_id: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
         primaryKey: true,
         references: {
@@ -16,7 +15,7 @@ module.exports = {
         onUpdate: 'CASCADE',
       },
       dependency_id: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
         primaryKey: true,
         references: {
@@ -35,7 +34,7 @@ module.exports = {
     });
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface: QueryInterface): Promise<void> {
     await queryInterface.dropTable('permissions_dependencies');
   }
-};
+}; 

@@ -1,9 +1,24 @@
-'use strict';
+import { QueryInterface } from 'sequelize';
 
-/** @type {import('sequelize-cli').Migration} */
-module.exports = {
-  async up(queryInterface, Sequelize) {
-    await queryInterface.bulkInsert('users', [
+interface UserData {
+  email: string;
+  password: string;
+  status: 'active' | 'suspended' | 'pending' | 'archived' | 'blocked' | 'rejected';
+  gender: 'male' | 'female' | 'others';
+  role: 'admin' | 'dealer' | 'custom';
+  name: string;
+  phone: string;
+  address_line_one: string;
+  city: string;
+  state: string;
+  zip: string;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export default {
+  async up(queryInterface: QueryInterface): Promise<void> {
+    const users: UserData[] = [
       {
         email: 'admin@example.com',
         password: '$2a$12$YCMu4I7vP7QYQTzYpvIwhuNtKcpOVLk3z7Dpbb9Jo.oZ1CWFs0/3C', // password: admin123
@@ -79,10 +94,12 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date()
       }
-    ]);
+    ];
+
+    await queryInterface.bulkInsert('users', users);
   },
 
-  async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('users', null, {});
+  async down(queryInterface: QueryInterface): Promise<void> {
+    await queryInterface.bulkDelete('users', {}, {});
   }
-};
+}; 

@@ -1,36 +1,48 @@
-import { Model, Optional, DataTypes, Sequelize } from 'sequelize';
+import { DataTypes, Model, Optional, Sequelize } from 'sequelize';
+import db from "@/config/db"
 
-interface ImageAttributes {
-    id: number;
+export interface IImageAttributes {
+    id?: number;
     url: string;
     prod_id: number;
 }
 
-interface ImageCreationAttributes extends Optional<ImageAttributes, "id"> { }
+export class Image extends Model<IImageAttributes, Optional<IImageAttributes, 'id'>> implements IImageAttributes {
+    public id!: number;
+    public url!: string;
+    public prod_id!: number;
 
-export interface ImageModel extends Model<ImageAttributes, ImageCreationAttributes> { }
+    // timestamps!
+    public readonly createdAt!: Date;
+    public readonly updatedAt!: Date;
+}
 
-const ImageModel = (sequelize: Sequelize, DataTypes: any) => {
-    const Image = sequelize.define<ImageModel>('images', {
+const ImageModel = (sequelize: Sequelize): typeof Image => {
+    Image.init({
         id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.INTEGER.UNSIGNED,
             primaryKey: true,
             autoIncrement: true,
         },
         url: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(255),
             allowNull: false,
         },
         prod_id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
             references: {
                 model: 'products',
                 key: 'id'
             }
-        }
-
+        },
+    }, {
+        sequelize,
+        tableName: "images",
+        freezeTableName: true,
+        timestamps: true,
     });
+
     return Image;
 };
 

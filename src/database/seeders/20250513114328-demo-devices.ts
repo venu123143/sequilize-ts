@@ -1,21 +1,34 @@
-'use strict';
+import { QueryInterface, DataTypes, QueryTypes } from 'sequelize';
 
-/** @type {import('sequelize-cli').Migration} */
-module.exports = {
-  async up(queryInterface, Sequelize) {
+interface DeviceData {
+  name: string;
+  type: string;
+  auth_token: string;
+  browser: string;
+  user_id: number;
+  created_at: Date;
+  updated_at: Date;
+}
+
+interface User {
+  id: number;
+}
+
+export default {
+  async up(queryInterface: QueryInterface): Promise<void> {
     // Get the user IDs first
-    const users = await queryInterface.sequelize.query(
+    const [users] = await queryInterface.sequelize.query<User[]>(
       'SELECT id FROM users',
-      { type: queryInterface.sequelize.QueryTypes.SELECT }
+      { type: QueryTypes.SELECT }
     );
     
-    if (users.length === 0) {
+    if (!users || users.length === 0) {
       console.log('No users found. Skipping device seeding.');
       return;
     }
 
     // Create devices for each user
-    const devices = [];
+    const devices: DeviceData[] = [];
     const browsers = ['Chrome', 'Firefox', 'Safari', 'Edge', 'Opera'];
     const deviceTypes = ['desktop', 'mobile', 'tablet'];
     
@@ -42,7 +55,7 @@ module.exports = {
     await queryInterface.bulkInsert('devices', devices);
   },
 
-  async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('devices', null, {});
+  async down(queryInterface: QueryInterface): Promise<void> {
+    await queryInterface.bulkDelete('devices', {}, {});
   }
-};
+}; 

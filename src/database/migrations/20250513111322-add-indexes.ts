@@ -1,8 +1,7 @@
-'use strict';
+import { QueryInterface, DataTypes } from 'sequelize';
 
-/** @type {import('sequelize-cli').Migration} */
-module.exports = {
-  async up(queryInterface, Sequelize) {
+export default {
+  async up(queryInterface: QueryInterface): Promise<void> {
     // Add additional constraints and indexes that might be needed after
     // all tables are created
 
@@ -19,11 +18,11 @@ module.exports = {
     await queryInterface.addIndex('devices', ['type']);
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface: QueryInterface): Promise<void> {
     // Remove the added indexes
     await queryInterface.removeIndex('products', ['title', 'seller']);
     await queryInterface.removeIndex('users', ['status', 'role']);
     await queryInterface.removeIndex('users', ['last_login']);
     await queryInterface.removeIndex('devices', ['type']);
   }
-};
+}; 
